@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+build/
+
+.env
+.env.local
+*.env
+
+*.log
+.DS_Store
+Thumbs.db
+
+.agents/
+.claude/
+.cursor/
+.devin/
