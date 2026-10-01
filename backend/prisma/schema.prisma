@@ -31,6 +31,8 @@ model usuario {
 model categoria {
   id        Int        @id @default(autoincrement())
   nombre    String     @unique
+  prefijo      String     @unique
+  ultimoNumero Int        @default(0)
   activo    Boolean    @default(true)
   productos producto[]
 }
