@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIBA - Categorías</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra-superior">
+    <nav>
+      <a href="productos.html">Productos</a>
+      <a href="categorias.html">Categorías</a>
+      <a href="movimientos.html">Movimientos</a>
+    </nav>
+    <div class="datos-sesion">
+      <span id="textoUsuario"></span>
+      <button id="botonSalir" type="button">Salir</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <h1>Categorías</h1>
+    <p id="mensajeEstado"></p>
+
+    <form id="formCategoria">
+      <h2 id="tituloFormulario">Nueva categoría</h2>
+
+      <label for="nombreCategoria">Nombre</label>
+      <input type="text" id="nombreCategoria" required>
+
+      <label for="prefijoCategoria">Prefijo del código (solo letras, ej: ML)</label>
+      <input type="text" id="prefijoCategoria" required>
+
+      <button type="submit">Guardar categoría</button>
+      <button type="button" id="botonCancelar" class="boton-secundario" hidden>Cancelar edición</button>
+      <p id="mensajeFormulario"></p>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Prefijo</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoTabla"></tbody>
+    </table>
+  </main>
+
+  <script type="module" src="js/categorias.js"></script>
+</body>
+</html>

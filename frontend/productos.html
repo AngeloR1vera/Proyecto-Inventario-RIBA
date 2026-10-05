@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIBA - Productos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra-superior">
+    <nav>
+      <a href="productos.html">Productos</a>
+      <a href="categorias.html">Categorías</a>
+      <a href="movimientos.html">Movimientos</a>
+    </nav>
+    <div class="datos-sesion">
+      <span id="textoUsuario"></span>
+      <button id="botonSalir" type="button">Salir</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <h1>Productos</h1>
+    <p id="mensajeEstado"></p>
+
+    <form id="formProducto">
+      <h2 id="tituloFormulario">Nuevo producto</h2>
+
+      <label for="nombreProducto">Nombre</label>
+      <input type="text" id="nombreProducto" required>
+
+      <label for="categoriaProducto">Categoría</label>
+      <select id="categoriaProducto" required>
+        <option value="">Selecciona una categoría</option>
+      </select>
+
+      <label for="stockMinimoProducto">Stock mínimo</label>
+      <input type="number" id="stockMinimoProducto" min="0" step="any" value="0" required>
+
+      <label for="unidadProducto">Unidad de medida</label>
+      <input type="text" id="unidadProducto" value="unidad" required>
+
+      <button type="submit">Guardar producto</button>
+      <button type="button" id="botonCancelar" class="boton-secundario" hidden>Cancelar edición</button>
+      <p id="mensajeFormulario"></p>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Stock actual</th>
+          <th>Stock mínimo</th>
+          <th>Unidad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoTabla"></tbody>
+    </table>
+  </main>
+
+  <script type="module" src="js/productos.js"></script>
+</body>
+</html>

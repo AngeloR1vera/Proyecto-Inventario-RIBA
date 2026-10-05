@@ -1,0 +1,251 @@
+:root {
+  --color-principal: #2b6cb0;
+  --color-principal-oscuro: #22558c;
+  --color-fondo: #f2f4f7;
+  --color-texto: #1f2933;
+  --color-error: #c53030;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-principal);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--color-principal-oscuro);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #cbd2d9;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input:disabled {
+  background-color: #e4e7eb;
+}
+
+/* Login */
+
+.contenedor-login {
+  max-width: 380px;
+  margin: 80px auto;
+  padding: 32px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contenedor-login h1 {
+  margin-top: 0;
+  text-align: center;
+}
+
+#formLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#formLogin button {
+  margin-top: 12px;
+}
+
+#mensajeError {
+  margin-top: 16px;
+  color: var(--color-error);
+  text-align: center;
+}
+
+/* Pantallas internas */
+
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: var(--color-principal);
+}
+
+.barra-superior a {
+  margin-right: 16px;
+  color: white;
+  text-decoration: none;
+}
+
+.barra-superior a:hover {
+  text-decoration: underline;
+}
+
+.datos-sesion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+}
+
+.datos-sesion button {
+  background-color: white;
+  color: var(--color-principal);
+}
+
+.contenido {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+th {
+  background-color: #e4e7eb;
+}
+
+/* Formularios de productos, categorías y movimientos */
+
+#formProducto,
+#formCategoria,
+#formMovimiento {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+#formProducto h2,
+#formCategoria h2,
+#formMovimiento h2 {
+  margin: 0 0 8px;
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #cbd2d9;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.mensaje-error {
+  color: var(--color-error);
+}
+
+.mensaje-ok {
+  color: #2f855a;
+}
+
+/* Tipo de movimiento */
+
+.tipo-entrada {
+  color: #2f855a;
+  font-weight: bold;
+}
+
+.tipo-salida {
+  color: var(--color-error);
+  font-weight: bold;
+}
+
+.tipo-ajuste {
+  color: #52606d;
+  font-weight: bold;
+}
+
+/* Botones de la tabla */
+
+.boton-secundario {
+  padding: 6px 12px;
+  margin-right: 8px;
+  background-color: #52606d;
+}
+
+.boton-secundario:hover {
+  background-color: #3e4c59;
+}
+
+#botonCancelar {
+  padding: 10px 16px;
+  margin-right: 0;
+}
+
+.boton-peligro {
+  padding: 6px 12px;
+  background-color: var(--color-error);
+}
+
+.boton-peligro:hover {
+  background-color: #9b2c2c;
+}
+
+/* Pantallas angostas (celular) */
+
+@media (max-width: 600px) {
+  .contenedor-login {
+    margin: 32px 16px;
+    padding: 24px;
+  }
+
+  .barra-superior {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .barra-superior a {
+    display: inline-block;
+    margin-right: 12px;
+  }
+
+  #formProducto,
+  #formCategoria,
+  #formMovimiento {
+    max-width: 100%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
