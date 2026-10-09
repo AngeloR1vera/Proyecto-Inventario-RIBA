@@ -35,7 +35,16 @@
       <select id="tipoMovimiento" required>
         <option value="ENTRADA">Entrada</option>
         <option value="SALIDA">Salida</option>
+        <option value="AJUSTE">Ajuste</option>
       </select>
+
+      <div id="contenedorSentido" hidden>
+        <label for="sentidoAjuste">¿El ajuste aumenta o disminuye el inventario?</label>
+        <select id="sentidoAjuste">
+          <option value="INCREMENTO">Aumenta</option>
+          <option value="DECREMENTO">Disminuye</option>
+        </select>
+      </div>
 
       <label for="cantidadMovimiento">Cantidad</label>
       <input type="number" id="cantidadMovimiento" min="0.001" step="any" required>
@@ -55,6 +64,7 @@
           <th>Tipo</th>
           <th>Cantidad</th>
           <th>Notas</th>
+          <th>Registrado por</th>
         </tr>
       </thead>
       <tbody id="cuerpoTabla"></tbody>

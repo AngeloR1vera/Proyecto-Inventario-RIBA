@@ -11,6 +11,8 @@ const mensajeEstado = document.getElementById("mensajeEstado");
 const formMovimiento = document.getElementById("formMovimiento");
 const campoProducto = document.getElementById("productoMovimiento");
 const campoTipo = document.getElementById("tipoMovimiento");
+const contenedorSentido = document.getElementById("contenedorSentido");
+const campoSentido = document.getElementById("sentidoAjuste");
 const campoCantidad = document.getElementById("cantidadMovimiento");
 const campoNotas = document.getElementById("notasMovimiento");
 const botonRegistrar = formMovimiento.querySelector("button");
@@ -26,8 +28,31 @@ if (usuarioActual) {
 }
 botonSalir.addEventListener("click", cerrarSesion);
 
+campoTipo.addEventListener("change", () => {
+  contenedorSentido.hidden = campoTipo.value !== "AJUSTE";
+});
+
 function formatearCantidad(valor) {
   return Number(valor).toLocaleString("es-CO", { maximumFractionDigits: 3 });
+}
+
+function obtenerNombreProducto(movimiento) {
+  if (movimiento.producto) {
+    return `${movimiento.producto.codigo} - ${movimiento.producto.nombre}`;
+  }
+  const productoEncontrado = productosPorId[movimiento.productoId];
+  if (productoEncontrado) {
+    return `${productoEncontrado.codigo} - ${productoEncontrado.nombre}`;
+  }
+  return `Producto #${movimiento.productoId}`;
+}
+
+function obtenerTextoTipo(movimiento) {
+  if (movimiento.tipo === "AJUSTE") {
+    if (movimiento.sentidoAjuste === "INCREMENTO") return "Ajuste (aumenta)";
+    if (movimiento.sentidoAjuste === "DECREMENTO") return "Ajuste (disminuye)";
+  }
+  return etiquetasTipo[movimiento.tipo] || movimiento.tipo;
 }
 
 function dibujarMovimientos(movimientosRecibidos) {
@@ -38,21 +63,16 @@ function dibujarMovimientos(movimientosRecibidos) {
   );
 
   for (const movimiento of movimientosRecientes) {
-    const producto = productosPorId[movimiento.productoId];
-    const nombreProducto = producto
-      ? `${producto.codigo} - ${producto.nombre}`
-      : `Producto #${movimiento.productoId}`;
-
     const fila = document.createElement("tr");
 
     const celdaFecha = document.createElement("td");
     celdaFecha.textContent = new Date(movimiento.fecha).toLocaleString("es-CO");
 
     const celdaProducto = document.createElement("td");
-    celdaProducto.textContent = nombreProducto;
+    celdaProducto.textContent = obtenerNombreProducto(movimiento);
 
     const celdaTipo = document.createElement("td");
-    celdaTipo.textContent = etiquetasTipo[movimiento.tipo] || movimiento.tipo;
+    celdaTipo.textContent = obtenerTextoTipo(movimiento);
     celdaTipo.className = "tipo-" + String(movimiento.tipo).toLowerCase();
 
     const celdaCantidad = document.createElement("td");
@@ -61,7 +81,10 @@ function dibujarMovimientos(movimientosRecibidos) {
     const celdaNotas = document.createElement("td");
     celdaNotas.textContent = movimiento.notas || "-";
 
-    fila.append(celdaFecha, celdaProducto, celdaTipo, celdaCantidad, celdaNotas);
+    const celdaUsuario = document.createElement("td");
+    celdaUsuario.textContent = movimiento.usuario?.nombre || "-";
+
+    fila.append(celdaFecha, celdaProducto, celdaTipo, celdaCantidad, celdaNotas, celdaUsuario);
     cuerpoTabla.appendChild(fila);
   }
 }
@@ -111,6 +134,7 @@ formMovimiento.addEventListener("submit", async (evento) => {
   mensajeFormulario.textContent = "";
 
   const cantidadMovimiento = Number(campoCantidad.value);
+  const esAjuste = campoTipo.value === "AJUSTE";
 
   if (!(cantidadMovimiento > 0)) {
     mensajeFormulario.className = "mensaje-error";
@@ -126,10 +150,12 @@ formMovimiento.addEventListener("submit", async (evento) => {
       productoId: Number(campoProducto.value),
       tipo: campoTipo.value,
       cantidad: cantidadMovimiento,
+      sentidoAjuste: esAjuste ? campoSentido.value : null,
       notas: campoNotas.value.trim()
     });
 
     formMovimiento.reset();
+    contenedorSentido.hidden = true;
     mensajeFormulario.className = "mensaje-ok";
     mensajeFormulario.textContent = "Movimiento registrado correctamente.";
     await cargarProductos();
