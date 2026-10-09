@@ -2,11 +2,11 @@ import { obtenerToken, cerrarSesion } from "./sesion.js";
 
 const URL_BASE = "http://localhost:4000/api";
 
-// true = datos simulados, false = backend real. Se cambia módulo por módulo según avance Angelo
+// true = datos simulados, false = backend real
 const SIMULAR = {
   auth: false,
   productos: false,
-  categorias: true,
+  categorias: false,
   movimientos: false
 };
 
@@ -67,7 +67,7 @@ export function iniciarSesion(email, password) {
   );
 }
 
-/* ---------- Datos de prueba (basados en el seed de Angelo) ---------- */
+/* ---------- Datos de prueba ---------- */
 
 const categoriasDePrueba = [
   { id: 1, nombre: "Manillas de Oro Laminado 18k", prefijo: "ML", ultimoNumero: 2 },
