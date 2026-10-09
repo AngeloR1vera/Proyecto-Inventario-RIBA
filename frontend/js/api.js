@@ -2,12 +2,12 @@ import { obtenerToken, cerrarSesion } from "./sesion.js";
 
 const URL_BASE = "http://localhost:4000/api";
 
-
+// true = datos simulados, false = backend real. Se cambia módulo por módulo según avance Angelo
 const SIMULAR = {
   auth: false,
-  productos: true,
+  productos: false,
   categorias: true,
-  movimientos: true
+  movimientos: false
 };
 
 async function pedir(ruta, opciones = {}, requiereToken = true) {
@@ -67,7 +67,7 @@ export function iniciarSesion(email, password) {
   );
 }
 
-/* ---------- Datos de prueba  ---------- */
+/* ---------- Datos de prueba (basados en el seed de Angelo) ---------- */
 
 const categoriasDePrueba = [
   { id: 1, nombre: "Manillas de Oro Laminado 18k", prefijo: "ML", ultimoNumero: 2 },
@@ -75,14 +75,14 @@ const categoriasDePrueba = [
 ];
 
 const productosDePrueba = [
-  { id: 1, codigo: "ML-001", nombre: "Manilla San Miguel de Oro Laminado 18k", categoriaId: 1, stockActual: 12, stockMinimo: 3, unidadMedida: "unidad", activo: true },
-  { id: 2, codigo: "MT-001", nombre: "Manilla de Temporada Navideña", categoriaId: 2, stockActual: 10, stockMinimo: 2, unidadMedida: "unidad", activo: true },
-  { id: 3, codigo: "ML-002", nombre: "Manilla Tres Carriles de Oro Laminado 18k", categoriaId: 1, stockActual: 5, stockMinimo: 1, unidadMedida: "unidad", activo: true }
+  { id: 1, codigo: "ML-001", nombre: "Manilla San Miguel de Oro Laminado 18k", categoriaId: 1, stockActual: 12, stockMinimo: 3, unidadMedida: "unidad", imagenUrl: null, activo: true },
+  { id: 2, codigo: "MT-001", nombre: "Manilla de Temporada Navideña", categoriaId: 2, stockActual: 10, stockMinimo: 2, unidadMedida: "unidad", imagenUrl: null, activo: true },
+  { id: 3, codigo: "ML-002", nombre: "Manilla Tres Carriles de Oro Laminado 18k", categoriaId: 1, stockActual: 5, stockMinimo: 1, unidadMedida: "unidad", imagenUrl: null, activo: true }
 ];
 
 const movimientosDePrueba = [
-  { id: 1, productoId: 1, tipo: "ENTRADA", cantidad: 15, usuarioId: 1, fecha: "2026-09-25T10:30:00", notas: "Compra inicial" },
-  { id: 2, productoId: 1, tipo: "SALIDA", cantidad: 3, usuarioId: 1, fecha: "2026-09-26T15:10:00", notas: "" }
+  { id: 1, productoId: 1, tipo: "ENTRADA", cantidad: 15, usuarioId: 1, fecha: "2026-09-25T10:30:00", sentidoAjuste: null, notas: "Compra inicial" },
+  { id: 2, productoId: 1, tipo: "SALIDA", cantidad: 3, usuarioId: 1, fecha: "2026-09-26T15:10:00", sentidoAjuste: null, notas: "" }
 ];
 
 /* ---------- Categorías ---------- */
@@ -277,14 +277,27 @@ export function crearMovimiento(datosMovimiento) {
           rechazar(new Error("La cantidad debe ser mayor que cero."));
           return;
         }
-        if (datosMovimiento.tipo === "SALIDA" && datosMovimiento.cantidad > producto.stockActual) {
-          rechazar(new Error(`Stock insuficiente: solo hay ${producto.stockActual} ${producto.unidadMedida} de "${producto.nombre}".`));
-          return;
+
+        let stockNuevo = producto.stockActual;
+
+        if (datosMovimiento.tipo === "ENTRADA") {
+          stockNuevo = producto.stockActual + datosMovimiento.cantidad;
+        } else if (datosMovimiento.tipo === "SALIDA") {
+          if (datosMovimiento.cantidad > producto.stockActual) {
+            rechazar(new Error(`Stock insuficiente: solo hay ${producto.stockActual} ${producto.unidadMedida} de "${producto.nombre}".`));
+            return;
+          }
+          stockNuevo = producto.stockActual - datosMovimiento.cantidad;
+        } else if (datosMovimiento.tipo === "AJUSTE") {
+          if (datosMovimiento.sentidoAjuste === "DECREMENTO" && datosMovimiento.cantidad > producto.stockActual) {
+            rechazar(new Error(`El ajuste dejaría el stock en negativo: solo hay ${producto.stockActual} ${producto.unidadMedida}.`));
+            return;
+          }
+          stockNuevo = datosMovimiento.sentidoAjuste === "DECREMENTO"
+            ? producto.stockActual - datosMovimiento.cantidad
+            : producto.stockActual + datosMovimiento.cantidad;
         }
 
-        const stockNuevo = datosMovimiento.tipo === "ENTRADA"
-          ? producto.stockActual + datosMovimiento.cantidad
-          : producto.stockActual - datosMovimiento.cantidad;
         producto.stockActual = Math.round(stockNuevo * 1000) / 1000;
 
         const movimientoNuevo = {

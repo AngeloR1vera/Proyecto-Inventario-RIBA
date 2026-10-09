@@ -20,6 +20,7 @@ const campoNombre = document.getElementById("nombreProducto");
 const campoCategoria = document.getElementById("categoriaProducto");
 const campoStockMinimo = document.getElementById("stockMinimoProducto");
 const campoUnidad = document.getElementById("unidadProducto");
+const campoImagen = document.getElementById("imagenProducto");
 const botonGuardar = formProducto.querySelector("button[type='submit']");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeFormulario = document.getElementById("mensajeFormulario");
@@ -44,6 +45,7 @@ function prepararEdicion(producto) {
   campoCategoria.value = String(producto.categoriaId);
   campoStockMinimo.value = Number(producto.stockMinimo);
   campoUnidad.value = producto.unidadMedida;
+  campoImagen.value = producto.imagenUrl || "";
 
   tituloFormulario.textContent = "Editar producto";
   botonGuardar.textContent = "Guardar cambios";
@@ -70,7 +72,8 @@ function dibujarProductos(productosRecibidos) {
   cuerpoTabla.innerHTML = "";
 
   for (const producto of productosRecibidos) {
-    const nombreCategoria = categoriasPorId[producto.categoriaId] || "Sin categoría";
+    const nombreCategoria =
+      producto.categoria?.nombre || categoriasPorId[producto.categoriaId] || "Sin categoría";
     const valoresFila = [
       producto.codigo,
       producto.nombre,
@@ -86,6 +89,17 @@ function dibujarProductos(productosRecibidos) {
       celda.textContent = valor;
       fila.appendChild(celda);
     }
+
+    const celdaImagen = document.createElement("td");
+    if (producto.imagenUrl) {
+      const img = document.createElement("img");
+      img.src = producto.imagenUrl;
+      img.style.cssText = "width:48px;height:48px;object-fit:cover;border-radius:4px";
+      celdaImagen.appendChild(img);
+    } else {
+      celdaImagen.textContent = "-";
+    }
+    fila.appendChild(celdaImagen);
 
     const celdaAcciones = document.createElement("td");
 
@@ -192,7 +206,8 @@ formProducto.addEventListener("submit", async (evento) => {
     nombre: nombreProducto,
     categoriaId: Number(campoCategoria.value),
     stockMinimo,
-    unidadMedida
+    unidadMedida,
+    imagenUrl: campoImagen.value.trim() || null
   };
   const estabaEditando = idProductoEditando !== null;
 
