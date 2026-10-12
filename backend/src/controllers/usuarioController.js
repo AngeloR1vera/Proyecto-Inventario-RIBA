@@ -97,4 +97,19 @@ async function desactivar(req, res, next) {
   }
 }
 
-module.exports = { listar, crear, actualizar, desactivar };
+async function reactivar(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ mensaje: 'El id del usuario no es válido' });
+    }
+
+    const usuarioReactivado = await usuarioService.reactivarUsuario(id);
+    res.json(usuarioReactivado);
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { listar, crear, actualizar, desactivar, reactivar };

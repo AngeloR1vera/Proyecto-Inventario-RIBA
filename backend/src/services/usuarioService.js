@@ -73,4 +73,21 @@ async function desactivarUsuario(id) {
   }
 }
 
-module.exports = { listarUsuarios, crearUsuario, actualizarUsuario, desactivarUsuario };
+async function reactivarUsuario(id) {
+  try {
+    return await prisma.usuario.update({
+      where: { id },
+      data: { activo: true },
+      select: datosVisibles
+    });
+  } catch (error) {
+    if (error.code === 'P2025') {
+      const errorNoExiste = new Error('Usuario no encontrado');
+      errorNoExiste.status = 404;
+      throw errorNoExiste;
+    }
+    throw error;
+  }
+}
+
+module.exports = { listarUsuarios, crearUsuario, actualizarUsuario, desactivarUsuario, reactivarUsuario };
