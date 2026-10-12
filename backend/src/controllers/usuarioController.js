@@ -39,4 +39,62 @@ async function crear(req, res, next) {
   }
 }
 
-module.exports = { listar, crear };
+async function actualizar(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+    const nombre = req.body.nombre ? req.body.nombre.trim() : '';
+    const email = req.body.email ? req.body.email.trim().toLowerCase() : '';
+    const password = req.body.password;
+    const rol = req.body.rol;
+
+    if (isNaN(id)) {
+      return res.status(400).json({ mensaje: 'El id del usuario no es válido' });
+    }
+
+    if (!nombre || !email || !rol) {
+      return res.status(400).json({ mensaje: 'Nombre, correo y rol son obligatorios' });
+    }
+
+    if (!email.includes('@')) {
+      return res.status(400).json({ mensaje: 'El correo no es válido' });
+    }
+
+    if (password && password.length < 6) {
+      return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    if (rol !== 'admin' && rol !== 'operador') {
+      return res.status(400).json({ mensaje: 'El rol debe ser admin u operador' });
+    }
+
+    if (id === req.usuario.id && rol !== 'admin') {
+      return res.status(400).json({ mensaje: 'No puedes quitarte el rol de administrador' });
+    }
+
+    const usuarioActualizado = await usuarioService.actualizarUsuario(id, nombre, email, rol, password);
+    res.json(usuarioActualizado);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function desactivar(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ mensaje: 'El id del usuario no es válido' });
+    }
+
+    if (id === req.usuario.id) {
+      return res.status(400).json({ mensaje: 'No puedes desactivar tu propia cuenta' });
+    }
+
+    await usuarioService.desactivarUsuario(id);
+    res.json({ mensaje: 'Usuario desactivado' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { listar, crear, actualizar, desactivar };

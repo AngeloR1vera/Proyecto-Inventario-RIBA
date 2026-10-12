@@ -10,5 +10,7 @@ router.use(verificarRol('admin'));
 
 router.get('/', usuarioController.listar);
 router.post('/', usuarioController.crear);
+router.put('/:id', usuarioController.actualizar);
+router.delete('/:id', usuarioController.desactivar);
 
 module.exports = router;
