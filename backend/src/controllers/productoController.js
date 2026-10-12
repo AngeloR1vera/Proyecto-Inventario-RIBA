@@ -13,6 +13,7 @@ async function crear(req, res, next) {
   try {
     const nombre = String(req.body.nombre || '').trim();
     const categoriaId = Number(req.body.categoriaId);
+    const precio = Number(req.body.precio ?? 0);
     const stockMinimo = Number(req.body.stockMinimo ?? 0);
     const unidadMedida = String(req.body.unidadMedida || '').trim();
     const imagenUrl = req.body.imagenUrl ? String(req.body.imagenUrl).trim() : null;
@@ -23,8 +24,11 @@ async function crear(req, res, next) {
     if (stockMinimo < 0) {
       return res.status(400).json({ mensaje: 'El stock mínimo no puede ser negativo' });
     }
+    if (!(precio >= 0)) {                                       
+      return res.status(400).json({ mensaje: 'El precio no puede ser negativo' });  
+    }
 
-    const producto = await productoService.crearProducto(nombre, categoriaId, stockMinimo, unidadMedida, imagenUrl);
+    const producto = await productoService.crearProducto(nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl);
     res.status(201).json(producto);
   } catch (error) {
     next(error);
@@ -36,6 +40,7 @@ async function actualizar(req, res, next) {
     const id = Number(req.params.id);
     const nombre = String(req.body.nombre || '').trim();
     const categoriaId = Number(req.body.categoriaId);
+    const precio = req.body.precio === undefined ? undefined : Number(req.body.precio); 
     const stockMinimo = Number(req.body.stockMinimo ?? 0);
     const unidadMedida = String(req.body.unidadMedida || '').trim();
     const imagenUrl = req.body.imagenUrl ? String(req.body.imagenUrl).trim() : null;
@@ -43,8 +48,11 @@ async function actualizar(req, res, next) {
     if (!Number.isInteger(id) || !nombre || !categoriaId || !unidadMedida) {
       return res.status(400).json({ mensaje: 'Datos incompletos o inválidos' });
     }
+    if (precio !== undefined && !(precio >= 0)) {               
+      return res.status(400).json({ mensaje: 'El precio no puede ser negativo' });  
+    }
 
-    const producto = await productoService.actualizarProducto(id, nombre, categoriaId, stockMinimo, unidadMedida, imagenUrl);
+    const producto = await productoService.actualizarProducto(id, nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl);
     res.json(producto);
   } catch (error) {
     next(error);

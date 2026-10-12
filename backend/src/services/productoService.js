@@ -8,7 +8,7 @@ async function listarProductos() {
   });
 }
 
-async function crearProducto(nombre, categoriaId, stockMinimo, unidadMedida, imagenUrl) {
+async function crearProducto(nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl) {
   return prisma.$transaction(async (tx) => {
     const categoria = await tx.categoria.update({
       where: { id: categoriaId },
@@ -18,15 +18,15 @@ async function crearProducto(nombre, categoriaId, stockMinimo, unidadMedida, ima
     const codigo = `${categoria.prefijo}-${String(categoria.ultimoNumero).padStart(3, '0')}`;
 
     return tx.producto.create({
-      data: { nombre, codigo, categoriaId, stockMinimo, unidadMedida, imagenUrl }
+      data: { nombre, codigo, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl }
     });
   });
 }
 
-async function actualizarProducto(id, nombre, categoriaId, stockMinimo, unidadMedida, imagenUrl) {
+async function actualizarProducto(id, nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl) {
   return prisma.producto.update({
     where: { id },
-    data: { nombre, categoriaId, stockMinimo, unidadMedida, imagenUrl }
+    data: { nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl }
   });
 }
 
