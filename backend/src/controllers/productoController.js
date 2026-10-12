@@ -16,6 +16,15 @@ async function listar(req, res, next) {
   }
 }
 
+async function listarAlertas(req, res, next) {
+  try {
+    const productosEnAlerta = await productoService.listarProductosEnAlerta();
+    res.json(productosEnAlerta);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function crear(req, res, next) {
   try {
     const nombre = String(req.body.nombre || '').trim();
@@ -81,4 +90,4 @@ async function desactivar(req, res, next) {
   }
 }
 
-module.exports = { listar, crear, actualizar, desactivar };
+module.exports = { listar, listarAlertas, crear, actualizar, desactivar };

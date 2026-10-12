@@ -21,6 +21,18 @@ async function listarProductos(buscar, categoriaId) {
   });
 }
 
+async function listarProductosEnAlerta() {
+  const productos = await prisma.producto.findMany({
+    where: { activo: true },
+    include: { categoria: { select: { nombre: true, prefijo: true } } },
+    orderBy: { codigo: 'asc' }
+  });
+
+  return productos.filter(
+    (producto) => Number(producto.stockActual) <= Number(producto.stockMinimo)
+  );
+}
+
 async function crearProducto(nombre, categoriaId, precio, stockMinimo, unidadMedida, imagenUrl) {
   return prisma.$transaction(async (tx) => {
     const categoria = await tx.categoria.update({
@@ -50,4 +62,4 @@ async function desactivarProducto(id) {
   });
 }
 
-module.exports = { listarProductos, crearProducto, actualizarProducto, desactivarProducto };
+module.exports = { listarProductos, listarProductosEnAlerta, crearProducto, actualizarProducto, desactivarProducto };

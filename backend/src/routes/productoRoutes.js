@@ -9,6 +9,7 @@ router.use(verificarToken);
 
 router.get('/', productoController.listar);
 router.post('/', verificarRol('admin'), productoController.crear);
+router.get('/alertas', productoController.listarAlertas);
 router.put('/:id', verificarRol('admin'), productoController.actualizar);
 router.delete('/:id', verificarRol('admin'), productoController.desactivar);
 
