@@ -42,6 +42,7 @@ model producto {
   codigo       String       @unique
   nombre       String
   categoriaId  Int
+  precio       Decimal      @default(0) @db.Decimal(12, 2)
   stockActual  Decimal      @default(0) @db.Decimal(12, 3)
   stockMinimo  Decimal      @default(0) @db.Decimal(12, 3)
   unidadMedida String       @default("unidad")
@@ -50,7 +51,7 @@ model producto {
   createdAt    DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime     @updatedAt @db.Timestamptz(6)
 
-  categoria   categoria    @relation(fields: [categoriaId], references: [id])
+  categoria   categoria     @relation(fields: [categoriaId], references: [id])
   movimientos movimiento[]
 }
 
