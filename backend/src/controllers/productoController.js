@@ -2,7 +2,14 @@ const productoService = require('../services/productoService');
 
 async function listar(req, res, next) {
   try {
-    const productos = await productoService.listarProductos();
+    const buscar = req.query.buscar ? req.query.buscar.trim() : '';
+    const categoriaId = req.query.categoriaId ? Number(req.query.categoriaId) : null;
+
+    if (categoriaId !== null && isNaN(categoriaId)) {
+      return res.status(400).json({ mensaje: 'El filtro de categoría no es válido' });
+    }
+
+    const productos = await productoService.listarProductos(buscar, categoriaId);
     res.json(productos);
   } catch (error) {
     next(error);

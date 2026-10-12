@@ -1,8 +1,21 @@
 const { prisma } = require('../lib/prisma');
 
-async function listarProductos() {
+async function listarProductos(buscar, categoriaId) {
+  const filtros = { activo: true };
+
+  if (buscar) {
+    filtros.OR = [
+      { nombre: { contains: buscar, mode: 'insensitive' } },
+      { codigo: { contains: buscar, mode: 'insensitive' } }
+    ];
+  }
+
+  if (categoriaId) {
+    filtros.categoriaId = categoriaId;
+  }
+
   return prisma.producto.findMany({
-    where: { activo: true },
+    where: filtros,
     include: { categoria: { select: { nombre: true, prefijo: true } } },
     orderBy: { codigo: 'asc' }
   });
