@@ -4,14 +4,15 @@ import {
   actualizarCategoria,
   eliminarCategoria
 } from "./api.js";
-import { exigirSesion, obtenerUsuario, cerrarSesion } from "./sesion.js";
+import { exigirSesion, esAdmin } from "./sesion.js";
+import { iniciarBarraSuperior } from "./barra.js";
 
 exigirSesion();
+iniciarBarraSuperior();
 
-const textoUsuario = document.getElementById("textoUsuario");
-const botonSalir = document.getElementById("botonSalir");
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const mensajeEstado = document.getElementById("mensajeEstado");
+const columnaAcciones = document.getElementById("columnaAcciones");
 
 const formCategoria = document.getElementById("formCategoria");
 const tituloFormulario = document.getElementById("tituloFormulario");
@@ -21,13 +22,14 @@ const botonGuardar = formCategoria.querySelector("button[type='submit']");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeFormulario = document.getElementById("mensajeFormulario");
 
+const puedeEditar = esAdmin();
+
 let idCategoriaEditando = null;
 
-const usuarioActual = obtenerUsuario();
-if (usuarioActual) {
-  textoUsuario.textContent = usuarioActual.nombre;
+if (!puedeEditar) {
+  formCategoria.hidden = true;
+  columnaAcciones.hidden = true;
 }
-botonSalir.addEventListener("click", cerrarSesion);
 
 function prepararEdicion(categoria) {
   idCategoriaEditando = categoria.id;
@@ -58,6 +60,25 @@ botonCancelar.addEventListener("click", () => {
   mensajeFormulario.textContent = "";
 });
 
+function crearCeldaAcciones(categoria) {
+  const celdaAcciones = document.createElement("td");
+
+  const botonEditar = document.createElement("button");
+  botonEditar.type = "button";
+  botonEditar.textContent = "Editar";
+  botonEditar.className = "boton-secundario";
+  botonEditar.addEventListener("click", () => prepararEdicion(categoria));
+
+  const botonEliminar = document.createElement("button");
+  botonEliminar.type = "button";
+  botonEliminar.textContent = "Eliminar";
+  botonEliminar.className = "boton-peligro";
+  botonEliminar.addEventListener("click", () => confirmarEliminacion(categoria));
+
+  celdaAcciones.append(botonEditar, botonEliminar);
+  return celdaAcciones;
+}
+
 function dibujarCategorias(categoriasRecibidas) {
   cuerpoTabla.innerHTML = "";
 
@@ -70,22 +91,12 @@ function dibujarCategorias(categoriasRecibidas) {
     const celdaNombre = document.createElement("td");
     celdaNombre.textContent = categoria.nombre;
 
-    const celdaAcciones = document.createElement("td");
+    fila.append(celdaPrefijo, celdaNombre);
 
-    const botonEditar = document.createElement("button");
-    botonEditar.type = "button";
-    botonEditar.textContent = "Editar";
-    botonEditar.className = "boton-secundario";
-    botonEditar.addEventListener("click", () => prepararEdicion(categoria));
+    if (puedeEditar) {
+      fila.appendChild(crearCeldaAcciones(categoria));
+    }
 
-    const botonEliminar = document.createElement("button");
-    botonEliminar.type = "button";
-    botonEliminar.textContent = "Eliminar";
-    botonEliminar.className = "boton-peligro";
-    botonEliminar.addEventListener("click", () => confirmarEliminacion(categoria));
-
-    celdaAcciones.append(botonEditar, botonEliminar);
-    fila.append(celdaPrefijo, celdaNombre, celdaAcciones);
     cuerpoTabla.appendChild(fila);
   }
 }

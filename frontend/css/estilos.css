@@ -10,6 +10,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -96,6 +100,11 @@ input:disabled {
 }
 
 .barra-superior a:hover {
+  text-decoration: underline;
+}
+
+.barra-superior .enlace-activo {
+  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -257,6 +266,88 @@ select {
 .etiqueta-agotado {
   background-color: var(--color-error);
   color: white;
+}
+
+/* Catálogo */
+
+.cuadricula-catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.tarjeta-producto {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: white;
+  border-top: 4px solid transparent;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tarjeta-bajo {
+  border-top-color: #f7c948;
+}
+
+.tarjeta-agotado {
+  border-top-color: var(--color-error);
+}
+
+.tarjeta-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  background-color: #e4e7eb;
+  color: #7b8794;
+}
+
+.tarjeta-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tarjeta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+}
+
+.tarjeta-cuerpo h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.tarjeta-cuerpo p {
+  margin: 0;
+}
+
+.tarjeta-codigo {
+  font-size: 0.8rem;
+  color: #7b8794;
+}
+
+.tarjeta-categoria {
+  font-size: 0.9rem;
+  color: #52606d;
+}
+
+.tarjeta-precio {
+  margin-top: 4px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: var(--color-principal);
+}
+
+.tarjeta-stock {
+  font-size: 0.9rem;
+}
+
+.tarjeta-cuerpo .etiqueta-stock {
+  align-self: flex-start;
 }
 
 /* Pantallas angostas (celular) */

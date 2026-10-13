@@ -8,7 +8,7 @@ const mensajeError = document.getElementById("mensajeError");
 const botonEntrar = formularioLogin.querySelector("button");
 
 if (obtenerToken()) {
-  window.location.href = "productos.html";
+  window.location.href = "catalogo.html";
 }
 
 formularioLogin.addEventListener("submit", async (evento) => {
@@ -24,7 +24,7 @@ formularioLogin.addEventListener("submit", async (evento) => {
       campoPassword.value
     );
     guardarSesion(token, usuario);
-    window.location.href = "productos.html";
+    window.location.href = "catalogo.html";
   } catch (error) {
     mensajeError.textContent = error.message;
     botonEntrar.disabled = false;

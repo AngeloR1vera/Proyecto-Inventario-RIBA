@@ -18,3 +18,13 @@ export function estadoStock(producto) {
   if (stockActual <= stockMinimo) return "bajo";
   return "normal";
 }
+
+export function crearEtiquetaStock(producto) {
+  const estado = estadoStock(producto);
+  if (estado === "normal") return null;
+
+  const etiqueta = document.createElement("span");
+  etiqueta.className = "etiqueta-stock etiqueta-" + estado;
+  etiqueta.textContent = estado === "agotado" ? "Agotado" : "Stock bajo";
+  return etiqueta;
+}

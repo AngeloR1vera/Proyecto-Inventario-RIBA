@@ -1,10 +1,11 @@
 import { obtenerMovimientos, obtenerProductos, crearMovimiento } from "./api.js";
-import { exigirSesion, obtenerUsuario, cerrarSesion } from "./sesion.js";
+import { exigirSesion } from "./sesion.js";
+import { iniciarBarraSuperior } from "./barra.js";
+import { formatearCantidad } from "./utilidades.js";
 
 exigirSesion();
+iniciarBarraSuperior();
 
-const textoUsuario = document.getElementById("textoUsuario");
-const botonSalir = document.getElementById("botonSalir");
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const mensajeEstado = document.getElementById("mensajeEstado");
 
@@ -22,19 +23,9 @@ let productosPorId = {};
 
 const etiquetasTipo = { ENTRADA: "Entrada", SALIDA: "Salida", AJUSTE: "Ajuste" };
 
-const usuarioActual = obtenerUsuario();
-if (usuarioActual) {
-  textoUsuario.textContent = usuarioActual.nombre;
-}
-botonSalir.addEventListener("click", cerrarSesion);
-
 campoTipo.addEventListener("change", () => {
   contenedorSentido.hidden = campoTipo.value !== "AJUSTE";
 });
-
-function formatearCantidad(valor) {
-  return Number(valor).toLocaleString("es-CO", { maximumFractionDigits: 3 });
-}
 
 function obtenerNombreProducto(movimiento) {
   if (movimiento.producto) {

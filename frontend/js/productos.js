@@ -5,15 +5,21 @@ import {
   actualizarProducto,
   eliminarProducto
 } from "./api.js";
-import { exigirSesion, obtenerUsuario, cerrarSesion } from "./sesion.js";
-import { formatearPrecio, formatearCantidad, estadoStock } from "./utilidades.js";
+import { exigirSesion, esAdmin } from "./sesion.js";
+import { iniciarBarraSuperior } from "./barra.js";
+import {
+  formatearPrecio,
+  formatearCantidad,
+  crearEtiquetaStock,
+  estadoStock
+} from "./utilidades.js";
 
 exigirSesion();
+iniciarBarraSuperior();
 
-const textoUsuario = document.getElementById("textoUsuario");
-const botonSalir = document.getElementById("botonSalir");
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const mensajeEstado = document.getElementById("mensajeEstado");
+const columnaAcciones = document.getElementById("columnaAcciones");
 
 const formProducto = document.getElementById("formProducto");
 const tituloFormulario = document.getElementById("tituloFormulario");
@@ -30,16 +36,17 @@ const mensajeFormulario = document.getElementById("mensajeFormulario");
 const campoBusqueda = document.getElementById("campoBusqueda");
 const filtroCategoria = document.getElementById("filtroCategoria");
 
+const puedeEditar = esAdmin();
+
 let idProductoEditando = null;
 let categoriasPorId = {};
 let temporizadorBusqueda = null;
 let numeroPeticion = 0;
 
-const usuarioActual = obtenerUsuario();
-if (usuarioActual) {
-  textoUsuario.textContent = usuarioActual.nombre;
+if (!puedeEditar) {
+  formProducto.hidden = true;
+  columnaAcciones.hidden = true;
 }
-botonSalir.addEventListener("click", cerrarSesion);
 
 function prepararEdicion(producto) {
   idProductoEditando = producto.id;
@@ -74,18 +81,33 @@ botonCancelar.addEventListener("click", () => {
 
 function crearCeldaEstado(producto) {
   const celdaEstado = document.createElement("td");
-  const estado = estadoStock(producto);
+  const etiqueta = crearEtiquetaStock(producto);
 
-  if (estado === "normal") {
+  if (etiqueta) {
+    celdaEstado.appendChild(etiqueta);
+  } else {
     celdaEstado.textContent = "-";
-    return celdaEstado;
   }
-
-  const etiqueta = document.createElement("span");
-  etiqueta.className = "etiqueta-stock etiqueta-" + estado;
-  etiqueta.textContent = estado === "agotado" ? "Agotado" : "Stock bajo";
-  celdaEstado.appendChild(etiqueta);
   return celdaEstado;
+}
+
+function crearCeldaAcciones(producto) {
+  const celdaAcciones = document.createElement("td");
+
+  const botonEditar = document.createElement("button");
+  botonEditar.type = "button";
+  botonEditar.textContent = "Editar";
+  botonEditar.className = "boton-secundario";
+  botonEditar.addEventListener("click", () => prepararEdicion(producto));
+
+  const botonEliminar = document.createElement("button");
+  botonEliminar.type = "button";
+  botonEliminar.textContent = "Eliminar";
+  botonEliminar.className = "boton-peligro";
+  botonEliminar.addEventListener("click", () => confirmarEliminacion(producto));
+
+  celdaAcciones.append(botonEditar, botonEliminar);
+  return celdaAcciones;
 }
 
 function dibujarProductos(productosRecibidos) {
@@ -129,23 +151,9 @@ function dibujarProductos(productosRecibidos) {
     }
     fila.appendChild(celdaImagen);
 
-    const celdaAcciones = document.createElement("td");
-
-    const botonEditar = document.createElement("button");
-    botonEditar.type = "button";
-    botonEditar.textContent = "Editar";
-    botonEditar.className = "boton-secundario";
-    botonEditar.addEventListener("click", () => prepararEdicion(producto));
-
-    const botonEliminar = document.createElement("button");
-    botonEliminar.type = "button";
-    botonEliminar.textContent = "Eliminar";
-    botonEliminar.className = "boton-peligro";
-    botonEliminar.addEventListener("click", () => confirmarEliminacion(producto));
-
-    celdaAcciones.appendChild(botonEditar);
-    celdaAcciones.appendChild(botonEliminar);
-    fila.appendChild(celdaAcciones);
+    if (puedeEditar) {
+      fila.appendChild(crearCeldaAcciones(producto));
+    }
 
     cuerpoTabla.appendChild(fila);
   }

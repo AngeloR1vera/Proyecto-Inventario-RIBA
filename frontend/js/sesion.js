@@ -15,6 +15,11 @@ export function obtenerUsuario() {
   return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
 }
 
+export function esAdmin() {
+  const usuarioActual = obtenerUsuario();
+  return usuarioActual !== null && usuarioActual.rol === "admin";
+}
+
 export function cerrarSesion() {
   localStorage.removeItem(CLAVE_TOKEN);
   localStorage.removeItem(CLAVE_USUARIO);
