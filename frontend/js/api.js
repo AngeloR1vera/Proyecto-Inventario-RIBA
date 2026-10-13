@@ -75,9 +75,9 @@ const categoriasDePrueba = [
 ];
 
 const productosDePrueba = [
-  { id: 1, codigo: "ML-001", nombre: "Manilla San Miguel de Oro Laminado 18k", categoriaId: 1, stockActual: 12, stockMinimo: 3, unidadMedida: "unidad", imagenUrl: null, activo: true },
-  { id: 2, codigo: "MT-001", nombre: "Manilla de Temporada Navideña", categoriaId: 2, stockActual: 10, stockMinimo: 2, unidadMedida: "unidad", imagenUrl: null, activo: true },
-  { id: 3, codigo: "ML-002", nombre: "Manilla Tres Carriles de Oro Laminado 18k", categoriaId: 1, stockActual: 5, stockMinimo: 1, unidadMedida: "unidad", imagenUrl: null, activo: true }
+  { id: 1, codigo: "ML-001", nombre: "Manilla San Miguel de Oro Laminado 18k", categoriaId: 1, precio: 50000, stockActual: 12, stockMinimo: 3, unidadMedida: "unidad", imagenUrl: null, activo: true },
+  { id: 2, codigo: "MT-001", nombre: "Manilla de Temporada Navideña", categoriaId: 2, precio: 35000, stockActual: 10, stockMinimo: 2, unidadMedida: "unidad", imagenUrl: null, activo: true },
+  { id: 3, codigo: "ML-002", nombre: "Manilla Tres Carriles de Oro Laminado 18k", categoriaId: 1, precio: 65000, stockActual: 5, stockMinimo: 1, unidadMedida: "unidad", imagenUrl: null, activo: true }
 ];
 
 const movimientosDePrueba = [
@@ -176,13 +176,32 @@ export function eliminarCategoria(idCategoria) {
 
 /* ---------- Productos ---------- */
 
-export function obtenerProductos() {
+function filtrarProductosDePrueba(buscar, categoriaId) {
+  const textoBuscado = buscar.trim().toLowerCase();
+
+  return productosDePrueba.filter((producto) => {
+    const coincideTexto =
+      textoBuscado === "" ||
+      producto.nombre.toLowerCase().includes(textoBuscado) ||
+      producto.codigo.toLowerCase().includes(textoBuscado);
+    const coincideCategoria = !categoriaId || producto.categoriaId === Number(categoriaId);
+    return coincideTexto && coincideCategoria;
+  });
+}
+
+export function obtenerProductos(buscar = "", categoriaId = "") {
   if (SIMULAR.productos) {
     return new Promise((resolver) => {
-      setTimeout(() => resolver(productosDePrueba), 400);
+      setTimeout(() => resolver(filtrarProductosDePrueba(buscar, categoriaId)), 400);
     });
   }
-  return pedir("/productos");
+
+  const parametros = new URLSearchParams();
+  if (buscar) parametros.append("buscar", buscar);
+  if (categoriaId) parametros.append("categoriaId", categoriaId);
+  const textoParametros = parametros.toString();
+
+  return pedir(textoParametros ? `/productos?${textoParametros}` : "/productos");
 }
 
 export function crearProducto(datosProducto) {

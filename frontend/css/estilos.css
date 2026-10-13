@@ -112,7 +112,7 @@ input:disabled {
 }
 
 .contenido {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 24px auto;
   padding: 0 16px;
 }
@@ -214,6 +214,51 @@ select {
   background-color: #9b2c2c;
 }
 
+/* Buscador y filtro */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filtros input {
+  flex: 1 1 240px;
+}
+
+.filtros select {
+  flex: 0 1 260px;
+}
+
+/* Alertas de stock */
+
+.fila-bajo {
+  background-color: #fffbea;
+}
+
+.fila-agotado {
+  background-color: #fff1f0;
+}
+
+.etiqueta-stock {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.etiqueta-bajo {
+  background-color: #f7c948;
+  color: #5c4400;
+}
+
+.etiqueta-agotado {
+  background-color: var(--color-error);
+  color: white;
+}
+
 /* Pantallas angostas (celular) */
 
 @media (max-width: 600px) {
@@ -237,6 +282,10 @@ select {
   #formCategoria,
   #formMovimiento {
     max-width: 100%;
+  }
+
+  .filtros select {
+    flex: 1 1 100%;
   }
 
   table {

@@ -34,6 +34,9 @@
         <option value="">Selecciona una categoría</option>
       </select>
 
+      <label for="precioProducto">Precio</label>
+      <input type="number" id="precioProducto" min="0" step="0.01" value="0" required>
+
       <label for="stockMinimoProducto">Stock mínimo</label>
       <input type="number" id="stockMinimoProducto" min="0" step="any" value="0" required>
 
@@ -53,15 +56,24 @@
       <p id="mensajeFormulario"></p>
     </form>
 
+    <div class="filtros">
+      <input type="text" id="campoBusqueda" placeholder="Buscar por nombre o código">
+      <select id="filtroCategoria">
+        <option value="">Todas las categorías</option>
+      </select>
+    </div>
+
     <table>
       <thead>
         <tr>
           <th>Código</th>
           <th>Nombre</th>
           <th>Categoría</th>
+          <th>Precio</th>
           <th>Stock actual</th>
           <th>Stock mínimo</th>
           <th>Unidad</th>
+          <th>Estado</th>
           <th>Imagen</th>
           <th>Acciones</th>
         </tr>

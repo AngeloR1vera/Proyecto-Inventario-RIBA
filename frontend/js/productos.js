@@ -6,6 +6,7 @@ import {
   eliminarProducto
 } from "./api.js";
 import { exigirSesion, obtenerUsuario, cerrarSesion } from "./sesion.js";
+import { formatearPrecio, formatearCantidad, estadoStock } from "./utilidades.js";
 
 exigirSesion();
 
@@ -18,6 +19,7 @@ const formProducto = document.getElementById("formProducto");
 const tituloFormulario = document.getElementById("tituloFormulario");
 const campoNombre = document.getElementById("nombreProducto");
 const campoCategoria = document.getElementById("categoriaProducto");
+const campoPrecio = document.getElementById("precioProducto");
 const campoStockMinimo = document.getElementById("stockMinimoProducto");
 const campoUnidad = document.getElementById("unidadProducto");
 const campoImagen = document.getElementById("imagenProducto");
@@ -25,8 +27,13 @@ const botonGuardar = formProducto.querySelector("button[type='submit']");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeFormulario = document.getElementById("mensajeFormulario");
 
+const campoBusqueda = document.getElementById("campoBusqueda");
+const filtroCategoria = document.getElementById("filtroCategoria");
+
 let idProductoEditando = null;
 let categoriasPorId = {};
+let temporizadorBusqueda = null;
+let numeroPeticion = 0;
 
 const usuarioActual = obtenerUsuario();
 if (usuarioActual) {
@@ -34,15 +41,12 @@ if (usuarioActual) {
 }
 botonSalir.addEventListener("click", cerrarSesion);
 
-function formatearCantidad(valor) {
-  return Number(valor).toLocaleString("es-CO", { maximumFractionDigits: 3 });
-}
-
 function prepararEdicion(producto) {
   idProductoEditando = producto.id;
 
   campoNombre.value = producto.nombre;
   campoCategoria.value = String(producto.categoriaId);
+  campoPrecio.value = Number(producto.precio);
   campoStockMinimo.value = Number(producto.stockMinimo);
   campoUnidad.value = producto.unidadMedida;
   campoImagen.value = producto.imagenUrl || "";
@@ -68,6 +72,22 @@ botonCancelar.addEventListener("click", () => {
   mensajeFormulario.textContent = "";
 });
 
+function crearCeldaEstado(producto) {
+  const celdaEstado = document.createElement("td");
+  const estado = estadoStock(producto);
+
+  if (estado === "normal") {
+    celdaEstado.textContent = "-";
+    return celdaEstado;
+  }
+
+  const etiqueta = document.createElement("span");
+  etiqueta.className = "etiqueta-stock etiqueta-" + estado;
+  etiqueta.textContent = estado === "agotado" ? "Agotado" : "Stock bajo";
+  celdaEstado.appendChild(etiqueta);
+  return celdaEstado;
+}
+
 function dibujarProductos(productosRecibidos) {
   cuerpoTabla.innerHTML = "";
 
@@ -78,17 +98,25 @@ function dibujarProductos(productosRecibidos) {
       producto.codigo,
       producto.nombre,
       nombreCategoria,
+      formatearPrecio(producto.precio),
       formatearCantidad(producto.stockActual),
       formatearCantidad(producto.stockMinimo),
       producto.unidadMedida
     ];
 
     const fila = document.createElement("tr");
+    const estado = estadoStock(producto);
+    if (estado !== "normal") {
+      fila.classList.add("fila-" + estado);
+    }
+
     for (const valor of valoresFila) {
       const celda = document.createElement("td");
       celda.textContent = valor;
       fila.appendChild(celda);
     }
+
+    fila.appendChild(crearCeldaEstado(producto));
 
     const celdaImagen = document.createElement("td");
     if (producto.imagenUrl) {
@@ -139,22 +167,40 @@ async function confirmarEliminacion(producto) {
 }
 
 async function cargarProductos() {
+  const miPeticion = ++numeroPeticion;
+  const textoBusqueda = campoBusqueda.value.trim();
+  const categoriaFiltrada = filtroCategoria.value;
+  const hayFiltros = textoBusqueda !== "" || categoriaFiltrada !== "";
+
   mensajeEstado.textContent = "Cargando productos...";
 
   try {
-    const productosRecibidos = await obtenerProductos();
+    const productosRecibidos = await obtenerProductos(textoBusqueda, categoriaFiltrada);
+
+    // Si el usuario siguió escribiendo mientras esperaba, esta respuesta ya quedó vieja
+    if (miPeticion !== numeroPeticion) return;
 
     if (productosRecibidos.length === 0) {
       cuerpoTabla.innerHTML = "";
-      mensajeEstado.textContent = "Todavía no hay productos registrados.";
+      mensajeEstado.textContent = hayFiltros
+        ? "No hay productos que coincidan con la búsqueda."
+        : "Todavía no hay productos registrados.";
       return;
     }
 
     mensajeEstado.textContent = "";
     dibujarProductos(productosRecibidos);
   } catch (error) {
+    if (miPeticion !== numeroPeticion) return;
     mensajeEstado.textContent = error.message;
   }
+}
+
+function crearOpcionCategoria(categoria) {
+  const opcion = document.createElement("option");
+  opcion.value = categoria.id;
+  opcion.textContent = categoria.nombre;
+  return opcion;
 }
 
 async function cargarCategorias() {
@@ -163,14 +209,12 @@ async function cargarCategorias() {
 
     categoriasPorId = {};
     campoCategoria.innerHTML = '<option value="">Selecciona una categoría</option>';
+    filtroCategoria.innerHTML = '<option value="">Todas las categorías</option>';
 
     for (const categoria of categoriasRecibidas) {
       categoriasPorId[categoria.id] = categoria.nombre;
-
-      const opcion = document.createElement("option");
-      opcion.value = categoria.id;
-      opcion.textContent = categoria.nombre;
-      campoCategoria.appendChild(opcion);
+      campoCategoria.appendChild(crearOpcionCategoria(categoria));
+      filtroCategoria.appendChild(crearOpcionCategoria(categoria));
     }
   } catch (error) {
     mensajeFormulario.className = "mensaje-error";
@@ -178,12 +222,20 @@ async function cargarCategorias() {
   }
 }
 
+campoBusqueda.addEventListener("input", () => {
+  clearTimeout(temporizadorBusqueda);
+  temporizadorBusqueda = setTimeout(cargarProductos, 300);
+});
+
+filtroCategoria.addEventListener("change", cargarProductos);
+
 formProducto.addEventListener("submit", async (evento) => {
   evento.preventDefault();
   mensajeFormulario.textContent = "";
 
   const nombreProducto = campoNombre.value.trim();
   const unidadMedida = campoUnidad.value.trim();
+  const precioProducto = Number(campoPrecio.value);
   const stockMinimo = Number(campoStockMinimo.value);
 
   if (nombreProducto === "") {
@@ -196,6 +248,11 @@ formProducto.addEventListener("submit", async (evento) => {
     mensajeFormulario.textContent = "La unidad de medida no puede estar vacía.";
     return;
   }
+  if (!(precioProducto >= 0)) {
+    mensajeFormulario.className = "mensaje-error";
+    mensajeFormulario.textContent = "El precio no puede ser negativo.";
+    return;
+  }
   if (stockMinimo < 0) {
     mensajeFormulario.className = "mensaje-error";
     mensajeFormulario.textContent = "El stock mínimo no puede ser negativo.";
@@ -205,6 +262,7 @@ formProducto.addEventListener("submit", async (evento) => {
   const datosProducto = {
     nombre: nombreProducto,
     categoriaId: Number(campoCategoria.value),
+    precio: precioProducto,
     stockMinimo,
     unidadMedida,
     imagenUrl: campoImagen.value.trim() || null
