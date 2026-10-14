@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIBA - Catálogo</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra-superior" id="barraSuperior"></header>
+
+  <main class="contenido">
+    <h1>Catálogo</h1>
+    <p id="mensajeEstado"></p>
+
+    <div class="aviso-alertas" id="avisoAlertas" hidden></div>
+
+    <div class="filtros">
+      <input type="text" id="campoBusqueda" placeholder="Buscar por nombre o código">
+      <select id="filtroCategoria">
+        <option value="">Todas las categorías</option>
+      </select>
+    </div>
+
+    <div class="cuadricula-catalogo" id="cuadriculaCatalogo"></div>
+  </main>
+
+  <script type="module" src="js/catalogo.js"></script>
+</body>
+</html>

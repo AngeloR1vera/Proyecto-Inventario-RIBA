@@ -204,6 +204,17 @@ export function obtenerProductos(buscar = "", categoriaId = "") {
   return pedir(textoParametros ? `/productos?${textoParametros}` : "/productos");
 }
 
+export function obtenerProductosEnAlerta() {
+  if (SIMULAR.productos) {
+    return new Promise((resolver) => {
+      setTimeout(() => {
+        resolver(productosDePrueba.filter((producto) => producto.stockActual <= producto.stockMinimo));
+      }, 300);
+    });
+  }
+  return pedir("/productos/alertas");
+}
+
 export function crearProducto(datosProducto) {
   if (SIMULAR.productos) {
     return new Promise((resolver, rechazar) => {

@@ -242,6 +242,16 @@ select {
 
 /* Alertas de stock */
 
+.aviso-alertas {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background-color: #fffbea;
+  border-left: 4px solid #f7c948;
+  border-radius: 6px;
+  color: #5c4400;
+  font-weight: bold;
+}
+
 .fila-bajo {
   background-color: #fffbea;
 }
