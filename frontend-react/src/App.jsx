@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./paginas/Login.jsx";
 import Catalogo from "./paginas/Catalogo.jsx";
 import Productos from "./paginas/Productos.jsx";
+import Categorias from "./paginas/Categorias.jsx";
 import RutaProtegida from "./componentes/RutaProtegida.jsx";
 import SoloAdmin from "./componentes/SoloAdmin.jsx";
 
@@ -22,7 +23,7 @@ function App() {
       <Route element={<RutaProtegida />}>
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/productos" element={<Productos />} />
-        <Route path="/categorias" element={<PantallaProvisional titulo="Categorías" />} />
+        <Route path="/categorias" element={<Categorias />} />
         <Route path="/movimientos" element={<PantallaProvisional titulo="Movimientos" />} />
 
         <Route element={<SoloAdmin />}>
