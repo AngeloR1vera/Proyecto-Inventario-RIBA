@@ -343,3 +343,26 @@ export function crearMovimiento(datosMovimiento) {
   }
   return pedir("/movimientos", { method: "POST", body: JSON.stringify(datosMovimiento) });
 }
+
+/* ---------- Usuarios (solo admin) ---------- */
+
+// Usuarios no tiene datos simulados: siempre usa el backend real
+export function obtenerUsuarios() {
+  return pedir("/usuarios");
+}
+
+export function crearUsuario(datosUsuario) {
+  return pedir("/usuarios", { method: "POST", body: JSON.stringify(datosUsuario) });
+}
+
+export function actualizarUsuario(idUsuario, datosUsuario) {
+  return pedir(`/usuarios/${idUsuario}`, { method: "PUT", body: JSON.stringify(datosUsuario) });
+}
+
+export function desactivarUsuario(idUsuario) {
+  return pedir(`/usuarios/${idUsuario}`, { method: "DELETE" });
+}
+
+export function reactivarUsuario(idUsuario) {
+  return pedir(`/usuarios/${idUsuario}/reactivar`, { method: "PATCH" });
+}

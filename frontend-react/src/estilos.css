@@ -1,9 +1,20 @@
+/* Paleta de la marca Riba accesorios: dorado, blanco y negro */
 :root {
-  --color-principal: #2b6cb0;
-  --color-principal-oscuro: #22558c;
-  --color-fondo: #f2f4f7;
-  --color-texto: #1f2933;
-  --color-error: #c53030;
+  --color-marca: #C69C6D;
+  --color-marca-oscuro: #A97F50;
+  --color-marca-texto: #8A6035;
+  --color-marca-suave: #F4ECE2;
+  --color-borde: #E5D8C6;
+  --color-blanco: #FFFFFF;
+  --color-negro: #000000;
+  --color-gris: #6B6B6B;
+  --color-fondo: #FAF7F2;
+
+  /* Colores de estado: se mantienen fuera de la paleta para que se reconozcan al instante */
+  --color-error: #B42318;
+  --color-error-oscuro: #8E1B12;
+  --color-ok: #2F7D4F;
+  --color-ok-oscuro: #256340;
 }
 
 * {
@@ -16,23 +27,36 @@
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Berlin Sans FB", "Trebuchet MS", Arial, sans-serif;
   background-color: var(--color-fondo);
-  color: var(--color-texto);
+  color: var(--color-negro);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: normal;
+}
+
+/* Los botones y campos no heredan la fuente solos, hay que indicarlo */
+button,
+input,
+select {
+  font-family: inherit;
 }
 
 button {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;
-  background-color: var(--color-principal);
-  color: white;
+  background-color: var(--color-marca);
+  color: var(--color-negro);
   font-size: 1rem;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: var(--color-principal-oscuro);
+  background-color: var(--color-marca-oscuro);
 }
 
 button:disabled {
@@ -42,13 +66,20 @@ button:disabled {
 
 input {
   padding: 10px;
-  border: 1px solid #cbd2d9;
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
+  background-color: var(--color-blanco);
   font-size: 1rem;
 }
 
 input:disabled {
-  background-color: #e4e7eb;
+  background-color: var(--color-marca-suave);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--color-marca);
+  border-color: var(--color-marca);
 }
 
 /* Login */
@@ -57,9 +88,10 @@ input:disabled {
   max-width: 380px;
   margin: 80px auto;
   padding: 32px;
-  background-color: white;
+  background-color: var(--color-blanco);
+  border-top: 4px solid var(--color-marca);
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
 .contenedor-login h1 {
@@ -90,34 +122,31 @@ input:disabled {
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  background-color: var(--color-principal);
+  background-color: var(--color-negro);
 }
 
 .barra-superior a {
   margin-right: 16px;
-  color: white;
+  color: var(--color-marca);
   text-decoration: none;
 }
 
 .barra-superior a:hover {
-  text-decoration: underline;
+  color: var(--color-blanco);
 }
 
 .barra-superior .enlace-activo {
-  font-weight: bold;
+  color: var(--color-blanco);
   text-decoration: underline;
+  text-decoration-color: var(--color-marca);
+  text-underline-offset: 6px;
 }
 
 .datos-sesion {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: white;
-}
-
-.datos-sesion button {
-  background-color: white;
-  color: var(--color-principal);
+  color: var(--color-blanco);
 }
 
 .contenido {
@@ -129,47 +158,53 @@ input:disabled {
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
+  background-color: var(--color-blanco);
 }
 
-th, td {
+th,
+td {
   padding: 10px 12px;
   text-align: left;
-  border-bottom: 1px solid #e4e7eb;
+  border-bottom: 1px solid var(--color-borde);
 }
 
 th {
-  background-color: #e4e7eb;
+  background-color: var(--color-marca);
+  color: var(--color-negro);
+  font-weight: normal;
 }
 
-/* Formularios de productos, categorías y movimientos */
+/* Formularios de productos, categorías, movimientos y usuarios */
 
 #formProducto,
 #formCategoria,
-#formMovimiento {
+#formMovimiento,
+#formUsuario {
   display: flex;
   flex-direction: column;
   gap: 8px;
   max-width: 400px;
   margin-bottom: 24px;
   padding: 20px;
-  background-color: white;
+  background-color: var(--color-blanco);
+  border-top: 4px solid var(--color-marca);
   border-radius: 8px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
 }
 
 #formProducto h2,
 #formCategoria h2,
-#formMovimiento h2 {
+#formMovimiento h2,
+#formUsuario h2 {
   margin: 0 0 8px;
 }
 
 select {
   padding: 10px;
-  border: 1px solid #cbd2d9;
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
+  background-color: var(--color-blanco);
   font-size: 1rem;
-  background-color: white;
 }
 
 .mensaje-error {
@@ -177,24 +212,26 @@ select {
 }
 
 .mensaje-ok {
-  color: #2f855a;
+  color: var(--color-ok);
+}
+
+.texto-ayuda {
+  font-size: 0.85rem;
+  color: var(--color-gris);
 }
 
 /* Tipo de movimiento */
 
 .tipo-entrada {
-  color: #2f855a;
-  font-weight: bold;
+  color: var(--color-ok);
 }
 
 .tipo-salida {
   color: var(--color-error);
-  font-weight: bold;
 }
 
 .tipo-ajuste {
-  color: #52606d;
-  font-weight: bold;
+  color: var(--color-marca-texto);
 }
 
 /* Botones de la tabla */
@@ -202,11 +239,12 @@ select {
 .boton-secundario {
   padding: 6px 12px;
   margin-right: 8px;
-  background-color: #52606d;
+  background-color: var(--color-negro);
+  color: var(--color-blanco);
 }
 
 .boton-secundario:hover {
-  background-color: #3e4c59;
+  background-color: #333333;
 }
 
 #botonCancelar {
@@ -217,10 +255,21 @@ select {
 .boton-peligro {
   padding: 6px 12px;
   background-color: var(--color-error);
+  color: var(--color-blanco);
 }
 
 .boton-peligro:hover {
-  background-color: #9b2c2c;
+  background-color: var(--color-error-oscuro);
+}
+
+.boton-reactivar {
+  padding: 6px 12px;
+  background-color: var(--color-ok);
+  color: var(--color-blanco);
+}
+
+.boton-reactivar:hover {
+  background-color: var(--color-ok-oscuro);
 }
 
 /* Buscador y filtro */
@@ -245,19 +294,18 @@ select {
 .aviso-alertas {
   margin-bottom: 16px;
   padding: 12px 16px;
-  background-color: #fffbea;
-  border-left: 4px solid #f7c948;
+  background-color: var(--color-marca-suave);
+  border-left: 4px solid var(--color-marca);
   border-radius: 6px;
-  color: #5c4400;
-  font-weight: bold;
+  color: var(--color-negro);
 }
 
 .fila-bajo {
-  background-color: #fffbea;
+  background-color: var(--color-marca-suave);
 }
 
 .fila-agotado {
-  background-color: #fff1f0;
+  background-color: #EEEEEE;
 }
 
 .etiqueta-stock {
@@ -265,17 +313,30 @@ select {
   padding: 3px 10px;
   border-radius: 12px;
   font-size: 0.85rem;
-  font-weight: bold;
 }
 
 .etiqueta-bajo {
-  background-color: #f7c948;
-  color: #5c4400;
+  background-color: var(--color-marca);
+  color: var(--color-negro);
 }
 
 .etiqueta-agotado {
-  background-color: var(--color-error);
-  color: white;
+  background-color: var(--color-negro);
+  color: var(--color-blanco);
+}
+
+/* Usuarios */
+
+.fila-inactiva {
+  opacity: 0.55;
+}
+
+.estado-activo {
+  color: var(--color-ok);
+}
+
+.estado-inactivo {
+  color: var(--color-gris);
 }
 
 /* Catálogo */
@@ -290,18 +351,18 @@ select {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: white;
+  background-color: var(--color-blanco);
   border-top: 4px solid transparent;
   border-radius: 10px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
 }
 
 .tarjeta-bajo {
-  border-top-color: #f7c948;
+  border-top-color: var(--color-marca);
 }
 
 .tarjeta-agotado {
-  border-top-color: var(--color-error);
+  border-top-color: var(--color-negro);
 }
 
 .tarjeta-imagen {
@@ -309,8 +370,8 @@ select {
   align-items: center;
   justify-content: center;
   height: 160px;
-  background-color: #e4e7eb;
-  color: #7b8794;
+  background-color: var(--color-marca-suave);
+  color: var(--color-marca-texto);
 }
 
 .tarjeta-imagen img {
@@ -337,19 +398,18 @@ select {
 
 .tarjeta-codigo {
   font-size: 0.8rem;
-  color: #7b8794;
+  color: var(--color-gris);
 }
 
 .tarjeta-categoria {
   font-size: 0.9rem;
-  color: #52606d;
+  color: var(--color-gris);
 }
 
 .tarjeta-precio {
   margin-top: 4px;
   font-size: 1.15rem;
-  font-weight: bold;
-  color: var(--color-principal);
+  color: var(--color-marca-texto);
 }
 
 .tarjeta-stock {
@@ -381,7 +441,8 @@ select {
 
   #formProducto,
   #formCategoria,
-  #formMovimiento {
+  #formMovimiento,
+  #formUsuario {
     max-width: 100%;
   }
 
@@ -394,7 +455,8 @@ select {
     overflow-x: auto;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px;
     font-size: 0.9rem;
   }

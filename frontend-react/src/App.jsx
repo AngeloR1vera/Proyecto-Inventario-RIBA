@@ -4,17 +4,9 @@ import Catalogo from "./paginas/Catalogo.jsx";
 import Productos from "./paginas/Productos.jsx";
 import Categorias from "./paginas/Categorias.jsx";
 import Movimientos from "./paginas/Movimientos.jsx";
+import Usuarios from "./paginas/Usuarios.jsx";
 import RutaProtegida from "./componentes/RutaProtegida.jsx";
 import SoloAdmin from "./componentes/SoloAdmin.jsx";
-
-function PantallaProvisional({ titulo }) {
-  return (
-    <main className="contenido">
-      <h1>{titulo}</h1>
-      <p>Pantalla en construcción.</p>
-    </main>
-  );
-}
 
 function App() {
   return (
@@ -28,7 +20,7 @@ function App() {
         <Route path="/movimientos" element={<Movimientos />} />
 
         <Route element={<SoloAdmin />}>
-          <Route path="/usuarios" element={<PantallaProvisional titulo="Usuarios" />} />
+          <Route path="/usuarios" element={<Usuarios />} />
         </Route>
       </Route>
 
